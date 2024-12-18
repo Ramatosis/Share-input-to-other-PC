@@ -12,7 +12,17 @@
 
 char buffer[1]={0};
 
-int main() {
+int main(int argc, char* argv[]) {
+    if(argc < 1){
+        printf("ERROR: to many arguments");
+        return -1;
+    }
+    char dir_ip[16];
+    strcpy(dir_ip,argv[1]);
+    if(dir_ip == "default"){
+        strcpy(dir_ip,INADDR_ANY);
+    }
+
     //iniciar Windows Socket
     WSADATA wsaData;
     int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -25,7 +35,8 @@ int main() {
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(8080); // Puerto (en formato de red)
-    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1"); // Dirección IP (localhost)
+    server_addr.sin_addr.s_addr = inet_addr(dir_ip); // Dirección IP, si esta en el localhost osea 127.0.0.1 solo escucha las peticiones envadas desde la misma maquina si
+    //tambien puedo poner INADRR_ANY para escuchar cualquier direccion ip o una ip de mi red especifica para solo escuchar a esta
 
     //crear el socket del servidor
     int server_sock = socket(AF_INET,SOCK_STREAM, 0);
